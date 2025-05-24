@@ -9,38 +9,47 @@
     /* Header styles */
     .main-header {
       text-align: center;
-      margin-bottom: 30px;
-      padding: 30px 20px;
+      margin-bottom: 15px;
+      padding: 20px 15px;
       background: white;
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
+    .logo-container {
+      margin-bottom: 15px;
+    }
+    
+    .cnn-logo {
+      width: 100px;
+      height: auto;
+    }
+    
     .welcome-title {
-      font-size: 28px;
+      font-size: 24px;
       font-weight: bold;
       color: #333;
-      margin: 20px 0 10px 0;
+      margin: 10px 0 8px 0;
     }
     
     .welcome-subtitle {
-      font-size: 16px;
+      font-size: 14px;
       color: #666;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
     
     .header-buttons {
       display: flex;
       justify-content: center;
-      gap: 15px;
-      margin-top: 20px;
+      gap: 10px;
+      margin-top: 15px;
     }
     
     .header-button {
-      padding: 10px 24px;
+      padding: 8px 20px;
       border: none;
       border-radius: 4px;
-      font-size: 14px;
+      font-size: 13px;
       cursor: pointer;
       transition: all 0.3s;
     }
@@ -63,12 +72,21 @@
       background: #218838;
     }
     
+    .show-profiles-button {
+      background: #6c757d;
+      color: white;
+    }
+    
+    .show-profiles-button:hover {
+      background: #5a6268;
+    }
+    
     .report-type-display {
-      margin-top: 15px;
-      padding: 10px;
+      margin-top: 10px;
+      padding: 8px;
       background: #f0f0f0;
       border-radius: 4px;
-      font-size: 14px;
+      font-size: 13px;
       display: none;
     }
     
@@ -78,9 +96,9 @@
     
     .controls-section { 
       text-align: center; 
-      margin-bottom: 20px; 
+      margin-bottom: 15px; 
       background: white; 
-      padding: 20px; 
+      padding: 15px; 
       border-radius: 8px; 
       box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
       position: relative;
@@ -88,14 +106,14 @@
     
     .clear-button {
       position: absolute;
-      right: 20px;
-      top: 20px;
-      padding: 8px 16px;
+      right: 15px;
+      top: 15px;
+      padding: 6px 14px;
       background: #dc3545;
       color: white;
       border: none;
       border-radius: 4px;
-      font-size: 13px;
+      font-size: 12px;
       cursor: pointer;
       transition: background 0.3s;
     }
@@ -108,14 +126,11 @@
       transform: translateY(1px);
     }
     
-    .controls-section h2 { margin-top: 0; font-size: 18px; color: #333; }
-    .product-toggles { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px; }
-    .toggle-btn { padding: 8px 16px; background: #eee; border: 2px solid #ddd; border-radius: 4px; cursor: pointer; font-weight: bold; transition: all 0.2s; }
+    .controls-section h2 { margin-top: 0; margin-bottom: 10px; font-size: 16px; color: #333; }
+    .product-toggles { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .toggle-btn { padding: 6px 14px; background: #eee; border: 2px solid #ddd; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; transition: all 0.2s; }
     .toggle-btn.active { background: #1a73e8; color: white; border-color: #1a73e8; }
     .toggle-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    .select-controls { margin-bottom: 10px; }
-    .select-controls button { padding: 6px 12px; background: white; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; margin: 0 5px; font-size: 13px; }
-    .select-controls button:hover { background: #f5f5f5; }
     .card-container { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; }
     .card { flex: 0 0 380px; background: white; padding: 20px; border-radius: 8px; border: 1px solid #ccc; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 24px; box-sizing: border-box; position: relative; transition: opacity 0.3s; }
     .card.inactive { opacity: 0.5; }
@@ -287,8 +302,104 @@
       border-radius: 4px; 
       cursor: pointer; 
     }
-    .download-btn:hover { 
-      background: #0056b3; 
+    /* Profile Modal styles */
+    .profile-modal { 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      background: rgba(0,0,0,0.5); 
+      display: none; 
+      align-items: center; 
+      justify-content: center; 
+      z-index: 2100; 
+    }
+    .profile-modal-content { 
+      background: white; 
+      padding: 30px; 
+      border-radius: 8px; 
+      max-width: 600px; 
+      width: 90%; 
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .profile-modal h2 { 
+      margin-top: 0; 
+      color: #333; 
+    }
+    .profile-select-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .profile-product-option {
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 4px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .profile-product-option:hover {
+      background: #f5f5f5;
+    }
+    .profile-product-option.selected {
+      background: #e3f2fd;
+      border-color: #1a73e8;
+    }
+    .profile-product-option input {
+      margin-right: 5px;
+    }
+    .profile-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .profile-buttons button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .show-profile-btn {
+      background: #1a73e8;
+      color: white;
+    }
+    .show-profile-btn:hover {
+      background: #1557b0;
+    }
+    .cancel-profile {
+      background: #6c757d;
+      color: white;
+    }
+    .cancel-profile:hover {
+      background: #5a6268;
+    }
+    
+    /* Profile Display styles */
+    .profile-container {
+      display: none;
+      margin: 40px 20px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .profile-header {
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+    .profile-header h2 {
+      margin: 0;
+      color: #333;
+    }
+    .profile-content {
+      /* Styles will be added based on profile requirements */
     }
   </style>
   <script>
@@ -1033,6 +1144,9 @@
 </head>
 <body>
   <div class="main-header">
+    <div class="logo-container">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/CNN.svg" alt="CNN" class="cnn-logo">
+    </div>
     <h1 class="welcome-title">Welcome to the CNN News Subscription Simulator</h1>
     <p class="welcome-subtitle">Configure up to 8 subscription products and run detailed market simulations</p>
     
@@ -1042,6 +1156,9 @@
       </button>
       <button class="header-button run-simulation-button" onclick="runSimulation()">
         <span style="margin-right: 5px;">▶️</span> Run Simulation
+      </button>
+      <button class="header-button show-profiles-button" onclick="showProfiles()">
+        <span style="margin-right: 5px;">👥</span> Show Profiles
       </button>
     </div>
     
@@ -1101,12 +1218,6 @@
       <button class="toggle-btn" onclick="toggleProduct(6)">Product 6</button>
       <button class="toggle-btn" onclick="toggleProduct(7)">Product 7</button>
       <button class="toggle-btn" onclick="toggleProduct(8)">Product 8</button>
-    </div>
-    <div class="select-controls">
-      <button onclick="selectAllProducts()">Select All</button>
-      <button onclick="deselectAllProducts()">Deselect All</button>
-      <button onclick="selectProducts([1,2,3,4])">Select 1-4</button>
-      <button onclick="selectProducts([5,6,7,8])">Select 5-8</button>
     </div>
   </div>
   
@@ -1205,6 +1316,29 @@
         <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
       </select>
       <div class="content"></div>
+    </div>
+  </div>
+  
+  <div class="profile-modal" id="profileModal">
+    <div class="profile-modal-content">
+      <h2>Select Products for Profile Display</h2>
+      <p>Choose which products to include in the profile comparison:</p>
+      
+      <div class="profile-select-grid" id="profileProductGrid"></div>
+      
+      <div class="profile-buttons">
+        <button class="show-profile-btn" onclick="displayProfile()">Show Profile</button>
+        <button class="cancel-profile" onclick="closeProfileModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="profile-container" id="profileContainer">
+    <div class="profile-header">
+      <h2>Product Profile Comparison</h2>
+    </div>
+    <div class="profile-content" id="profileContent">
+      <!-- Profile content will be dynamically generated -->
     </div>
   </div>
 
