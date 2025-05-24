@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CNN Subscription Simulator</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f9f9f9; padding: 24px; }
+    .controls-section { text-align: center; margin-bottom: 20px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .controls-section h2 { margin-top: 0; font-size: 18px; color: #333; }
+    .product-toggles { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px; }
+    .toggle-btn { padding: 8px 16px; background: #eee; border: 2px solid #ddd; border-radius: 4px; cursor: pointer; font-weight: bold; transition: all 0.2s; }
+    .toggle-btn.active { background: #1a73e8; color: white; border-color: #1a73e8; }
+    .toggle-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .select-controls { margin-bottom: 10px; }
+    .select-controls button { padding: 6px 12px; background: white; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; margin: 0 5px; font-size: 13px; }
+    .select-controls button:hover { background: #f5f5f5; }
+    .card-container { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; }
+    .card { flex: 0 0 380px; background: white; padding: 20px; border-radius: 8px; border: 1px solid #ccc; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 24px; box-sizing: border-box; position: relative; transition: opacity 0.3s; }
+    .card.inactive { opacity: 0.5; }
+    .card.inactive::after { content: 'EXCLUDED FROM SIMULATION'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-20deg); background: rgba(255,0,0,0.1); color: #cc0000; padding: 10px 20px; border: 2px solid #cc0000; border-radius: 8px; font-weight: bold; font-size: 14px; pointer-events: none; }
+    .header { background: #cc0000; color: white; padding: 16px; font-weight: bold; font-size: 18px; text-align: center; border-radius: 6px; margin: -20px -20px 20px -20px; text-transform: uppercase; }
+    select { width: 100%; padding: 12px; font-size: 15px; margin-bottom: 16px; box-sizing: border-box; }
+    label { color: #000; font-weight: bold; margin-top: 10px; margin-bottom: 4px; display: block; font-size: 14px; }
+    .add-btn { width: 100%; padding: 8px; background: white; border: 2px solid #000; border-radius: 4px; cursor: pointer; margin-bottom: 10px; font-size: 14px; }
+    .add-btn:hover { background: #f5f5f5; border-color: #cc0000; }
+    .feature-list { margin-bottom: 15px; border: 1px solid #eee; border-radius: 4px; padding: 5px; }
+    .feature-item { display: flex; justify-content: space-between; padding: 6px 8px; font-size: 14px; border-bottom: 1px solid #f0f0f0; }
+    .feature-item:last-child { border-bottom: none; }
+    .remove { color: #cc0000; cursor: pointer; font-weight: bold; font-size: 16px; }
+    .btn-group { display: flex; gap: 10px; margin: 12px 0; }
+    .btn-group button { flex: 1; padding: 10px; cursor: pointer; background: #eee; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+    .btn-group button.active { background: #1a73e8; color: white; }
+    .discount-options { background: #f8f9fa; padding: 12px; margin: 10px 0; border-radius: 4px; }
+    .discount-options h4 { font-size: 14px; margin: 0 0 8px 0; }
+    .discount-option { font-size: 13px; padding: 4px 0; }
+    input[type="range"] { width: 100%; margin: 10px 0; }
+    .price-labels { display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-top: -5px; }
+    .pricing-display { margin-top: 12px; font-size: 14px; }
+    .pricing-table { width: 100%; font-size: 14px; border-collapse: collapse; margin-top: 10px; }
+    .pricing-table td, .pricing-table th { padding: 6px; text-align: center; border: 1px solid #ddd; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .modal { background: white; padding: 20px; border-radius: 8px; max-width: 400px; max-height: 80vh; overflow-y: auto; }
+    .modal h3 { margin-top: 0; }
+    .select-all { margin: 10px 0; text-align: right; }
+    .select-all button { background: #1a73e8; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+    .select-all button:hover { background: #1557b0; }
+    .modal-options { margin: 10px 0; }
+    .modal-option { padding: 8px; margin: 4px 0; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; display: flex; align-items: center; }
+    .modal-option:hover { background: #e8e8e8; }
+    .modal-option.selected { background: #e3f2fd; border-color: #1a73e8; }
+    .modal-option input { margin-right: 10px; }
+    .modal-buttons { display: flex; gap: 10px; margin-top: 15px; }
+    .modal-buttons button { flex: 1; padding: 8px 16px; border-radius: 4px; cursor: pointer; border: none; }
+    .modal-add { background: #1a73e8; color: white; }
+    .modal-add:hover { background: #1557b0; }
+    .modal-cancel { background: #eee; color: #333; border: 1px solid #ccc; }
+    .modal-cancel:hover { background: #ddd; }
+  </style>
+</head>
+<body>
+  <div class="modal-overlay" id="featureModal">
+    <div class="modal">
+      <h3 id="modalTitle">Select Feature</h3>
+      <div class="modal-options" id="modalOptions"></div>
+      <div class="modal-buttons">
+        <button class="modal-add" onclick="addSelectedFeatures()">Add Selected</button>
+        <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="controls-section">
+    <h2>Select Products to Include in Simulation</h2>
+    <div class="product-toggles" id="productToggles">
+      <button class="toggle-btn active" onclick="toggleProduct(1)">Product 1</button>
+      <button class="toggle-btn active" onclick="toggleProduct(2)">Product 2</button>
+      <button class="toggle-btn active" onclick="toggleProduct(3)">Product 3</button>
+      <button class="toggle-btn active" onclick="toggleProduct(4)">Product 4</button>
+      <button class="toggle-btn" onclick="toggleProduct(5)">Product 5</button>
+      <button class="toggle-btn" onclick="toggleProduct(6)">Product 6</button>
+      <button class="toggle-btn" onclick="toggleProduct(7)">Product 7</button>
+      <button class="toggle-btn" onclick="toggleProduct(8)">Product 8</button>
+    </div>
+    <div class="select-controls">
+      <button onclick="selectAllProducts()">Select All</button>
+      <button onclick="deselectAllProducts()">Deselect All</button>
+      <button onclick="selectProducts([1,2,3,4])">Select 1-4</button>
+      <button onclick="selectProducts([5,6,7,8])">Select 5-8</button>
+    </div>
+  </div>
+  
+  <div class="card-container">
+    <div class="card active" data-card="1">
+      <div class="header">PRODUCT 1</div>
+      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
+        <option value="">Select Base Product</option>
+        <option value="CNN Reader">CNN Reader</option>
+        <option value="CNN Streaming">CNN Streaming</option>
+        <option value="CNN All-Access">CNN All-Access</option>
+        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
+      </select>
+      <div class="content"></div>
+    </div>
+    
+    <div class="card active" data-card="2">
+      <div class="header">PRODUCT 2</div>
+      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
+        <option value="">Select Base Product</option>
+        <option value="CNN Reader">CNN Reader</option>
+        <option value="CNN Streaming">CNN Streaming</option>
+        <option value="CNN All-Access">CNN All-Access</option>
+        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
+      </select>
+      <div class="content"></div>
+    </div>
+    
+    <div class="card active" data-card="3">
+      <div class="header">PRODUCT 3</div>
+      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
+        <option value="">Select Base Product</option>
+        <option value="CNN Reader">CNN Reader</option>
+        <option value="CNN Streaming">CNN Streaming</option>
+        <option value="CNN All-Access">CNN All-Access</option>
+        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
+      </select>
+      <div class="content"></div>
+    </div>
+    
+    <div class="card active" data-card="4">
+      <div class="header">PRODUCT 4</div>
+      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
+        <option value="">Select Base Product</option>
+        <option value="CNN Reader">CNN Reader</option>
+        <option value="CNN Streaming">CNN Streaming</option>
+        <option value="CNN All-Access">CNN All-Access</option>
+        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
+      </select>
+      <div class="content"></div>
+    </div>
+    
+    <div class="card inactive" data-card="5">
+      <div class="header">PRODUCT 5</div>
+      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
+        <option value="">Select Base Product</option>
+        <option value="CNN Reader">CNN Reader</option>
+        <option value="CNN Streaming">CNN Streaming</option>
+        <option value="CNN All-Access">CNN All-Access</option>
+        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
+      </select>
+      <div class="content"></div>
+    </div>
+    
+    <div class="card inactive" data-card="6">
+      <div class="header">PRODUCT 6</div>
+      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
+        <option value="">Select Base Product</option>
+        <option value="CNN Reader">CNN Reader</option>
+        <option value="CNN Streaming">CNN Streaming</option>
+        <option value="CNN All-Access">CNN All-Access</option>
+        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
+      </select>
+      <div class="content"></div>
+    </div>
+    
+    <div class="card inactive" data-card="7">
+      <div class="header">PRODUCT 7</div>
+      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
+        <option value="">Select Base Product</option>
+        <option value="CNN Reader">CNN Reader</option>
+        <option value="CNN Streaming">CNN Streaming</option>
+        <option value="CNN All-Access">CNN All-Access</option>
+        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
+      </select>
+      <div class="content"></div>
+    </div>
+    
+    <div class="card inactive" data-card="8">
+      <div class="header">PRODUCT 8</div>
+      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
+        <option value="">Select Base Product</option>
+        <option value="CNN Reader">CNN Reader</option>
+        <option value="CNN Streaming">CNN Streaming</option>
+        <option value="CNN All-Access">CNN All-Access</option>
+        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
+      </select>
+      <div class="content"></div>
+    </div>
+  </div>
+
+  <script>
+    // Store card data
+    const cardData = {};
+    const activeProducts = new Set([1, 2, 3, 4]);
+    let currentModalData = { cardNum: '', type: '' };
+
+    // Initialize card data
+    for (let i = 1; i <= 8; i++) {
+      cardData[i] = {
+        product: '',
+        readerFeatures: [],
+        streamingFeatures: [],
+        verticals: [],
+        monthlyRate: 10,
+        pricingType: '',
+        discount: ''
+      };
+    }
+
+    // Pricing ranges by product
+    const pricingRanges = {
+      'CNN Reader': { min: 5, max: 25, default: 10 },
+      'CNN Streaming': { min: 10, max: 40, default: 20 },
+      'CNN All-Access': { min: 15, max: 50, default: 30 },
+      'CNN Standalone Vertical': { min: 3, max: 15, default: 8 }
+    };
+
+    // Toggle product active/inactive
+    function toggleProduct(num) {
+      const card = document.querySelector(`[data-card="${num}"]`);
+      const toggleBtn = document.querySelectorAll('.toggle-btn')[num - 1];
+      
+      if (activeProducts.has(num)) {
+        activeProducts.delete(num);
+        card.classList.remove('active');
+        card.classList.add('inactive');
+        toggleBtn.classList.remove('active');
+      } else {
+        activeProducts.add(num);
+        card.classList.add('active');
+        card.classList.remove('inactive');
+        toggleBtn.classList.add('active');
+      }
+    }
+
+    // Select all products
+    function selectAllProducts() {
+      for (let i = 1; i <= 8; i++) {
+        if (!activeProducts.has(i)) {
+          toggleProduct(i);
+        }
+      }
+    }
+
+    // Deselect all products
+    function deselectAllProducts() {
+      for (let i = 1; i <= 8; i++) {
+        if (activeProducts.has(i)) {
+          toggleProduct(i);
+        }
+      }
+    }
+
+    // Select specific products
+    function selectProducts(nums) {
+      for (let i = 1; i <= 8; i++) {
+        if (activeProducts.has(i)) {
+          activeProducts.delete(i);
+          document.querySelector(`[data-card="${i}"]`).classList.remove('active');
+          document.querySelector(`[data-card="${i}"]`).classList.add('inactive');
+          document.querySelectorAll('.toggle-btn')[i - 1].classList.remove('active');
+        }
+      }
+      nums.forEach(i => {
+        activeProducts.add(i);
+        document.querySelector(`[data-card="${i}"]`).classList.add('active');
+        document.querySelector(`[data-card="${i}"]`).classList.remove('inactive');
+        document.querySelectorAll('.toggle-btn')[i - 1].classList.add('active');
+      });
+    }
+
+    function updateCard(card, product) {
+      const cardNum = card.dataset.card;
+      const content = card.querySelector('.content');
+      
+      cardData[cardNum].product = product;
+      content.innerHTML = '';
+      
+      if (!product) return;
+      
+      // Get pricing for this product
+      const pricing = pricingRanges[product] || { min: 5, max: 50, default: 10 };
+      const verticalCount = cardData[cardNum].verticals.length;
+      let min = pricing.min;
+      let max = pricing.max;
+      let defaultPrice = pricing.default;
+      
+      // Add $2 per vertical (except Standalone)
+      if (product !== 'CNN Standalone Vertical' && verticalCount > 0) {
+        min += verticalCount * 2;
+        max += verticalCount * 2;
+        defaultPrice += verticalCount * 2;
+      }
+      
+      if (product === 'CNN Standalone Vertical') {
+        content.innerHTML = `
+          <label>Select Vertical</label>
+          <select class="vertical-select">
+            <option value="">Select Vertical</option>
+            <option>CNN Longevity</option>
+            <option>CNN Meditation & Mindfulness</option>
+            <option>CNN Fitness</option>
+            <option>CNN Entertainment Tracker</option>
+            <option>CNN Expert Buying Guide</option>
+            <option>CNN Personal Finance</option>
+            <option>CNN Travel</option>
+            <option>CNN Home</option>
+            <option>CNN Beauty</option>
+            <option>CNN Weather & Natural Phenomena</option>
+          </select>
+        `;
+      } else {
+        let html = '';
+        
+        if (product === 'CNN Reader' || product === 'CNN All-Access') {
+          html += `
+            <label>Reader Features (<span class="reader-count">0</span> selected)</label>
+            <button class="add-btn" onclick="addFeatures('${cardNum}', 'reader')">+ Add</button>
+            <div class="feature-list reader-list"></div>
+          `;
+        }
+        
+        if (product === 'CNN Streaming' || product === 'CNN All-Access') {
+          html += `
+            <label>Streaming Features (<span class="streaming-count">0</span> selected)</label>
+            <button class="add-btn" onclick="addFeatures('${cardNum}', 'streaming')">+ Add</button>
+            <div class="feature-list streaming-list"></div>
+          `;
+        }
+        
+        html += `
+          <label>Verticals (<span class="vertical-count">0</span> selected)</label>
+          <button class="add-btn" onclick="addFeatures('${cardNum}', 'vertical')">+ Add</button>
+          <div class="feature-list vertical-list"></div>
+        `;
+        
+        content.innerHTML = html;
+        
+        // Restore features display
+        updateFeatureDisplay(cardNum, 'reader');
+        updateFeatureDisplay(cardNum, 'streaming');
+        updateFeatureDisplay(cardNum, 'vertical');
+      }
+      
+      // Add pricing section
+      content.innerHTML += `
+        <label>Configure Pricing</label>
+        <div class="btn-group">
+          <button onclick="setPricing('${cardNum}', 'monthly', this)">Monthly Only</button>
+          <button onclick="setPricing('${cardNum}', 'annual', this)">Annual Only</button>
+          <button onclick="setPricing('${cardNum}', 'both', this)">Both</button>
+        </div>
+        <div class="discount-section"></div>
+        <input type="range" min="${min}" max="${max}" value="${defaultPrice}" class="price-slider" oninput="updatePrice('${cardNum}', this.value)">
+        <div class="price-labels">
+          <span>$${min.toFixed(2)}/mo</span>
+          <span>$${max.toFixed(2)}/mo</span>
+        </div>
+        <div class="pricing-display">
+          <div><strong>Monthly:</strong> $${defaultPrice.toFixed(2)}</div>
+          <div style="color: #666;">Inferred Annual: $${(defaultPrice * 12).toFixed(2)}</div>
+        </div>
+      `;
+      
+      cardData[cardNum].monthlyRate = defaultPrice;
+    }
+
+    function addFeatures(cardNum, type) {
+      const features = {
+        reader: ['CNN Reality Check', 'Podcast Club', 'News from Local Providers', 'CNN You', 'CNN Technology Insider', 'Bonus Subscription', 'News from Global Providers', 'CNN Live Events and Expert', 'Ask CNN', 'AI Anchor', 'CNN Business & Markets Insider', 'CNN Archive'],
+        streaming: ['Multiview', 'Personalized Daily Video Briefings', 'Real-Time Fact Checking', 'CNN You Streaming', 'Live Q&A with CNN Experts', 'Live Global Feeds', 'Customized Local News', 'Original Short-Form CNN Series', 'Live Text Commentary from CNN Experts', 'Interactive Video Companions', 'Real-Time News Ticker', 'Exclusive, Subscriber-Only Events'],
+        vertical: ['CNN Longevity', 'CNN Meditation & Mindfulness', 'CNN Fitness', 'CNN Entertainment Tracker', 'CNN Expert Buying Guide', 'CNN Personal Finance', 'CNN Travel', 'CNN Home', 'CNN Beauty', 'CNN Weather & Natural Phenomena']
+      };
+      
+      const selected = cardData[cardNum][type + (type === 'vertical' ? 's' : 'Features')];
+      const available = features[type].filter(f => !selected.includes(f));
+      
+      if (type === 'vertical' && selected.length >= 3) {
+        alert('Maximum 3 verticals allowed');
+        return;
+      }
+      
+      if (available.length === 0) {
+        alert('No more features available to add');
+        return;
+      }
+      
+      currentModalData = { cardNum, type };
+      
+      const modal = document.getElementById('featureModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalOptions = document.getElementById('modalOptions');
+      
+      modalTitle.textContent = `Select ${type === 'reader' ? 'Reader' : type === 'streaming' ? 'Streaming' : 'Vertical'} Features`;
+      
+      let selectAllHtml = '';
+      if (type !== 'vertical') {
+        selectAllHtml = `<div class="select-all"><button onclick="selectAllFeatures()">Select All</button></div>`;
+      }
+      
+      modalOptions.innerHTML = selectAllHtml + available.map((f, i) => 
+        `<div class="modal-option" onclick="toggleFeature(this)">
+          <input type="checkbox" value="${f}" />
+          <span>${i + 1}. ${f}</span>
+        </div>`
+      ).join('');
+      
+      modal.style.display = 'flex';
+    }
+    
+    function toggleFeature(optionDiv) {
+      const { type, cardNum } = currentModalData;
+      
+      if (type === 'vertical') {
+        const checkboxes = document.querySelectorAll('#modalOptions input[type="checkbox"]:checked');
+        const currentSelected = cardData[cardNum].verticals.length;
+        
+        if (checkboxes.length + currentSelected >= 3 && !optionDiv.querySelector('input').checked) {
+          alert('Maximum 3 verticals allowed');
+          return;
+        }
+      }
+      
+      const checkbox = optionDiv.querySelector('input[type="checkbox"]');
+      checkbox.checked = !checkbox.checked;
+      optionDiv.classList.toggle('selected', checkbox.checked);
+    }
+    
+    function selectAllFeatures() {
+      const checkboxes = document.querySelectorAll('#modalOptions input[type="checkbox"]');
+      const options = document.querySelectorAll('#modalOptions .modal-option');
+      
+      checkboxes.forEach((checkbox, index) => {
+        checkbox.checked = true;
+        options[index].classList.add('selected');
+      });
+    }
+    
+    function addSelectedFeatures() {
+      const { cardNum, type } = currentModalData;
+      const selected = cardData[cardNum][type + (type === 'vertical' ? 's' : 'Features')];
+      const checkboxes = document.querySelectorAll('#modalOptions input[type="checkbox"]:checked');
+      
+      let added = 0;
+      checkboxes.forEach(checkbox => {
+        if (type === 'vertical' && selected.length >= 3) {
+          return;
+        }
+        selected.push(checkbox.value);
+        added++;
+      });
+      
+      if (added > 0) {
+        updateFeatureDisplay(cardNum, type);
+        
+        // Update pricing if verticals changed
+        if (type === 'vertical') {
+          updateVerticalPricing(cardNum);
+        }
+      }
+      
+      closeModal();
+    }
+    
+    function closeModal() {
+      document.getElementById('featureModal').style.display = 'none';
+      currentModalData = { cardNum: '', type: '' };
+    }
+
+    function removeFeature(cardNum, type, feature) {
+      const selected = cardData[cardNum][type + (type === 'vertical' ? 's' : 'Features')];
+      const index = selected.indexOf(feature);
+      if (index > -1) {
+        selected.splice(index, 1);
+        updateFeatureDisplay(cardNum, type);
+        
+        if (type === 'vertical') {
+          updateVerticalPricing(cardNum);
+        }
+      }
+    }
+
+    function updateFeatureDisplay(cardNum, type) {
+      const card = document.querySelector(`[data-card="${cardNum}"]`);
+      if (!card) return;
+      
+      const list = card.querySelector(`.${type}-list`);
+      const count = card.querySelector(`.${type}-count`);
+      
+      if (!list || !count) return;
+      
+      const selected = cardData[cardNum][type + (type === 'vertical' ? 's' : 'Features')];
+      
+      list.innerHTML = selected.map(f => 
+        `<div class="feature-item">
+          <span>${f}</span>
+          <span class="remove" onclick="removeFeature('${cardNum}', '${type}', '${f}')">×</span>
+        </div>`
+      ).join('');
+      
+      count.textContent = selected.length;
+    }
+
+    function updateVerticalPricing(cardNum) {
+      const card = document.querySelector(`[data-card="${cardNum}"]`);
+      const product = cardData[cardNum].product;
+      
+      if (!card || !product || product === 'CNN Standalone Vertical') return;
+      
+      const slider = card.querySelector('.price-slider');
+      const priceLabels = card.querySelector('.price-labels');
+      
+      if (!slider || !priceLabels) return;
+      
+      const pricing = pricingRanges[product];
+      const verticalCount = cardData[cardNum].verticals.length;
+      
+      const min = pricing.min + (verticalCount * 2);
+      const max = pricing.max + (verticalCount * 2);
+      const defaultPrice = pricing.default + (verticalCount * 2);
+      
+      slider.min = min;
+      slider.max = max;
+      
+      if (cardData[cardNum].monthlyRate < min || cardData[cardNum].monthlyRate > max) {
+        slider.value = defaultPrice;
+        cardData[cardNum].monthlyRate = defaultPrice;
+      }
+      
+      priceLabels.innerHTML = `
+        <span>$${min.toFixed(2)}/mo</span>
+        <span>$${max.toFixed(2)}/mo</span>
+      `;
+      
+      updatePriceDisplay(cardNum);
+    }
+
+    function setPricing(cardNum, type, btn) {
+      const btnGroup = btn.parentElement;
+      btnGroup.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      cardData[cardNum].pricingType = type;
+      
+      const card = document.querySelector(`[data-card="${cardNum}"]`);
+      const discountSection = card.querySelector('.discount-section');
+      
+      if (type === 'both') {
+        discountSection.innerHTML = `
+          <div class="discount-options">
+            <h4>Select Discount</h4>
+            <hr>
+            <div class="discount-option">
+              <label><input type="radio" name="discount${cardNum}" value="free" onchange="setDiscount('${cardNum}', 'free')"> Free Month / 3 Months</label>
+            </div>
+            <div class="discount-option">
+              <label><input type="radio" name="discount${cardNum}" value="30" onchange="setDiscount('${cardNum}', '30')"> 30% off 12-Mo Sub</label>
+            </div>
+            <div class="discount-option">
+              <label><input type="radio" name="discount${cardNum}" value="50" onchange="setDiscount('${cardNum}', '50')"> 50% off 12-Mo Sub</label>
+            </div>
+          </div>
+        `;
+      } else {
+        discountSection.innerHTML = '';
+        cardData[cardNum].discount = '';
+      }
+    }
+
+    function setDiscount(cardNum, discount) {
+      cardData[cardNum].discount = discount;
+      updatePriceDisplay(cardNum);
+    }
+
+    function updatePrice(cardNum, value) {
+      cardData[cardNum].monthlyRate = parseFloat(value);
+      updatePriceDisplay(cardNum);
+    }
+
+    function updatePriceDisplay(cardNum) {
+      const card = document.querySelector(`[data-card="${cardNum}"]`);
+      if (!card) return;
+      
+      const display = card.querySelector('.pricing-display');
+      if (!display) return;
+      
+      const rate = cardData[cardNum].monthlyRate;
+      const type = cardData[cardNum].pricingType;
+      const discount = cardData[cardNum].discount;
+      
+      if (type === 'both' && discount) {
+        let year1Monthly = rate * 11;
+        let year1Annual = rate * 12;
+        
+        if (discount === 'free') year1Annual = rate * 9;
+        else if (discount === '30') year1Annual = rate * 12 * 0.7;
+        else if (discount === '50') year1Annual = rate * 12 * 0.5;
+        
+        display.innerHTML = `
+          <table class="pricing-table">
+            <tr>
+              <th></th>
+              <th>$/mo</th>
+              <th>Month-to-Month</th>
+              <th>12-mo Sub</th>
+            </tr>
+            <tr>
+              <td><strong>Year 1</strong></td>
+              <td>$${rate.toFixed(2)}</td>
+              <td>$${year1Monthly.toFixed(2)}</td>
+              <td>$${year1Annual.toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td><strong>Year 2</strong></td>
+              <td>$${rate.toFixed(2)}</td>
+              <td>$${(rate * 12).toFixed(2)}</td>
+              <td>$${(rate * 12).toFixed(2)}</td>
+            </tr>
+          </table>
+        `;
+      } else {
+        display.innerHTML = `
+          <div><strong>Monthly:</strong> $${rate.toFixed(2)}</div>
+          <div style="color: #666;">Inferred Annual: $${(rate * 12).toFixed(2)}</div>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>
