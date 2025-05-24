@@ -16,16 +16,6 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
-    .logo-container {
-      margin-bottom: 20px;
-    }
-    
-    .cnn-logo {
-      width: 120px;
-      height: auto;
-      margin: 0 auto;
-    }
-    
     .welcome-title {
       font-size: 28px;
       font-weight: bold;
@@ -39,13 +29,73 @@
       margin-bottom: 20px;
     }
     
-    .clear-button {
+    .header-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .header-button {
       padding: 10px 24px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .set-report-button {
+      background: #007bff;
+      color: white;
+    }
+    
+    .set-report-button:hover {
+      background: #0056b3;
+    }
+    
+    .run-simulation-button {
+      background: #28a745;
+      color: white;
+    }
+    
+    .run-simulation-button:hover {
+      background: #218838;
+    }
+    
+    .report-type-display {
+      margin-top: 15px;
+      padding: 10px;
+      background: #f0f0f0;
+      border-radius: 4px;
+      font-size: 14px;
+      display: none;
+    }
+    
+    .report-type-display strong {
+      color: #333;
+    }
+    
+    .controls-section { 
+      text-align: center; 
+      margin-bottom: 20px; 
+      background: white; 
+      padding: 20px; 
+      border-radius: 8px; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+      position: relative;
+    }
+    
+    .clear-button {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      padding: 8px 16px;
       background: #dc3545;
       color: white;
       border: none;
       border-radius: 4px;
-      font-size: 14px;
+      font-size: 13px;
       cursor: pointer;
       transition: background 0.3s;
     }
@@ -58,7 +108,6 @@
       transform: translateY(1px);
     }
     
-    .controls-section { text-align: center; margin-bottom: 20px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     .controls-section h2 { margin-top: 0; font-size: 18px; color: #333; }
     .product-toggles { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px; }
     .toggle-btn { padding: 8px 16px; background: #eee; border: 2px solid #ddd; border-radius: 4px; cursor: pointer; font-weight: bold; transition: all 0.2s; }
@@ -242,210 +291,13 @@
       background: #0056b3; 
     }
   </style>
-</head>
-<body>
-  <div class="main-header">
-    <div class="logo-container">
-      <!-- CNN Logo SVG -->
-      <svg class="cnn-logo" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
-        <g fill="#CC0000">
-          <!-- C -->
-          <path d="M10,10 Q5,10 5,20 Q5,30 10,30 L20,30 L20,25 L15,25 Q10,25 10,20 Q10,15 15,15 L20,15 L20,10 L10,10 Z"/>
-          <!-- N -->
-          <path d="M30,10 L30,30 L35,30 L35,20 L40,30 L45,30 L45,10 L40,10 L40,20 L35,10 L30,10 Z"/>
-          <!-- N -->
-          <path d="M55,10 L55,30 L60,30 L60,20 L65,30 L70,30 L70,10 L65,10 L65,20 L60,10 L55,10 Z"/>
-          <!-- Registered trademark -->
-          <circle cx="80" cy="12" r="5" fill="none" stroke="#CC0000" stroke-width="1"/>
-          <text x="80" y="15" font-size="6" text-anchor="middle" fill="#CC0000">®</text>
-        </g>
-      </svg>
-    </div>
-    
-    <h1 class="welcome-title">Welcome to the CNN News Subscription Simulator</h1>
-    <p class="welcome-subtitle">Configure up to 8 subscription products and run detailed market simulations</p>
-    
-    <button class="clear-button" onclick="clearAllSelections()">
-      <span style="margin-right: 5px;">🗑️</span> Clear All Selections
-    </button>
-  </div>
-
-  <div class="modal-overlay" id="featureModal">
-    <div class="modal">
-      <h3 id="modalTitle">Select Feature</h3>
-      <div class="modal-options" id="modalOptions"></div>
-      <div class="modal-buttons">
-        <button class="modal-add" onclick="addSelectedFeatures()">Add Selected</button>
-        <button class="modal-cancel" onclick="closeModal()">Cancel</button>
-      </div>
-    </div>
-  </div>
-  
-  <div class="report-modal" id="reportModal">
-    <div class="report-modal-content">
-      <h2>Configure Report</h2>
-      
-      <div class="report-option">
-        <label>Report Type:</label>
-        <div>
-          <label><input type="radio" name="reportType" value="tiered" checked> Products Included as Part of Tiered Bundles</label>
-          <label><input type="radio" name="reportType" value="independent"> Each Product as Independent Product</label>
-        </div>
-      </div>
-      
-      <div class="report-option">
-        <label>Select Output:</label>
-        <div>
-          <label><input type="radio" name="outputType" value="percentage" checked> Take Rates (%)</label>
-          <label><input type="radio" name="outputType" value="population"> Population Counts (#)</label>
-          <label><input type="radio" name="outputType" value="revenue"> Revenue ($)</label>
-        </div>
-      </div>
-      
-      <div class="report-buttons">
-        <button class="generate-report" onclick="generateReport()">Generate Report</button>
-        <button class="cancel-report" onclick="closeReportModal()">Cancel</button>
-      </div>
-    </div>
-  </div>
-  
-  <div class="controls-section">
-    <h2>Select Products to Include in Simulation</h2>
-    <div class="product-toggles" id="productToggles">
-      <button class="toggle-btn active" onclick="toggleProduct(1)">Product 1</button>
-      <button class="toggle-btn active" onclick="toggleProduct(2)">Product 2</button>
-      <button class="toggle-btn active" onclick="toggleProduct(3)">Product 3</button>
-      <button class="toggle-btn active" onclick="toggleProduct(4)">Product 4</button>
-      <button class="toggle-btn" onclick="toggleProduct(5)">Product 5</button>
-      <button class="toggle-btn" onclick="toggleProduct(6)">Product 6</button>
-      <button class="toggle-btn" onclick="toggleProduct(7)">Product 7</button>
-      <button class="toggle-btn" onclick="toggleProduct(8)">Product 8</button>
-    </div>
-    <div class="select-controls">
-      <button onclick="selectAllProducts()">Select All</button>
-      <button onclick="deselectAllProducts()">Deselect All</button>
-      <button onclick="selectProducts([1,2,3,4])">Select 1-4</button>
-      <button onclick="selectProducts([5,6,7,8])">Select 5-8</button>
-    </div>
-  </div>
-  
-  <div class="card-container">
-    <div class="card active" data-card="1">
-      <div class="header">PRODUCT 1</div>
-      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
-        <option value="">Select Base Product</option>
-        <option value="CNN Reader">CNN Reader</option>
-        <option value="CNN Streaming">CNN Streaming</option>
-        <option value="CNN All-Access">CNN All-Access</option>
-        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
-      </select>
-      <div class="content"></div>
-    </div>
-    
-    <div class="card active" data-card="2">
-      <div class="header">PRODUCT 2</div>
-      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
-        <option value="">Select Base Product</option>
-        <option value="CNN Reader">CNN Reader</option>
-        <option value="CNN Streaming">CNN Streaming</option>
-        <option value="CNN All-Access">CNN All-Access</option>
-        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
-      </select>
-      <div class="content"></div>
-    </div>
-    
-    <div class="card active" data-card="3">
-      <div class="header">PRODUCT 3</div>
-      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
-        <option value="">Select Base Product</option>
-        <option value="CNN Reader">CNN Reader</option>
-        <option value="CNN Streaming">CNN Streaming</option>
-        <option value="CNN All-Access">CNN All-Access</option>
-        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
-      </select>
-      <div class="content"></div>
-    </div>
-    
-    <div class="card active" data-card="4">
-      <div class="header">PRODUCT 4</div>
-      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
-        <option value="">Select Base Product</option>
-        <option value="CNN Reader">CNN Reader</option>
-        <option value="CNN Streaming">CNN Streaming</option>
-        <option value="CNN All-Access">CNN All-Access</option>
-        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
-      </select>
-      <div class="content"></div>
-    </div>
-    
-    <div class="card inactive" data-card="5">
-      <div class="header">PRODUCT 5</div>
-      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
-        <option value="">Select Base Product</option>
-        <option value="CNN Reader">CNN Reader</option>
-        <option value="CNN Streaming">CNN Streaming</option>
-        <option value="CNN All-Access">CNN All-Access</option>
-        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
-      </select>
-      <div class="content"></div>
-    </div>
-    
-    <div class="card inactive" data-card="6">
-      <div class="header">PRODUCT 6</div>
-      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
-        <option value="">Select Base Product</option>
-        <option value="CNN Reader">CNN Reader</option>
-        <option value="CNN Streaming">CNN Streaming</option>
-        <option value="CNN All-Access">CNN All-Access</option>
-        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
-      </select>
-      <div class="content"></div>
-    </div>
-    
-    <div class="card inactive" data-card="7">
-      <div class="header">PRODUCT 7</div>
-      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
-        <option value="">Select Base Product</option>
-        <option value="CNN Reader">CNN Reader</option>
-        <option value="CNN Streaming">CNN Streaming</option>
-        <option value="CNN All-Access">CNN All-Access</option>
-        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
-      </select>
-      <div class="content"></div>
-    </div>
-    
-    <div class="card inactive" data-card="8">
-      <div class="header">PRODUCT 8</div>
-      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
-        <option value="">Select Base Product</option>
-        <option value="CNN Reader">CNN Reader</option>
-        <option value="CNN Streaming">CNN Streaming</option>
-        <option value="CNN All-Access">CNN All-Access</option>
-        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
-      </select>
-      <div class="content"></div>
-    </div>
-  </div>
-
-  <div style="text-align: center; margin: 40px;">
-    <button id="runReportBtn" onclick="showReportModal()" style="padding: 15px 30px; background: #cc0000; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; display: none;">
-      Run Report
-    </button>
-  </div>
-
-  <div class="report-container" id="reportContainer">
-    <div class="report-header">
-      <h2 id="reportTitle">Simulation Report</h2>
-      <button class="download-btn" onclick="downloadReport()">Download CSV</button>
-    </div>
-    <div id="reportContent"></div>
-  </div>
-
   <script>
     // Store card data
     const cardData = {};
     const activeProducts = new Set([1, 2, 3, 4]);
     let currentModalData = { cardNum: '', type: '' };
+    let currentReportType = null;
+    let currentOutputType = null;
 
     // Initialize card data
     for (let i = 1; i <= 8; i++) {
@@ -467,6 +319,21 @@
       'CNN All-Access': { min: 15, max: 50, default: 30 },
       'CNN Standalone Vertical': { min: 3, max: 15, default: 8 }
     };
+
+    // Get pricing range for product
+    function getPricingRangeForProduct(product, verticalCount = 0) {
+      const baseRange = pricingRanges[product] || { min: 5, max: 50, default: 10 };
+      
+      if (product === 'CNN Standalone Vertical') {
+        return baseRange;
+      }
+      
+      return {
+        min: baseRange.min + (verticalCount * 2),
+        max: baseRange.max + (verticalCount * 2),
+        default: baseRange.default + (verticalCount * 2)
+      };
+    }
 
     // Clear all selections
     function clearAllSelections() {
@@ -494,10 +361,11 @@
         // Clear the content area
         const content = card.querySelector('.content');
         content.innerHTML = '';
+        
+        // Reset the header
+        const header = card.querySelector('.header');
+        header.textContent = `PRODUCT ${i}`;
       }
-      
-      // Hide the Run Report button
-      document.getElementById('runReportBtn').style.display = 'none';
       
       // Hide any open report
       document.getElementById('reportContainer').style.display = 'none';
@@ -522,7 +390,6 @@
         card.classList.remove('inactive');
         toggleBtn.classList.add('active');
       }
-      checkProductsConfigured();
     }
 
     // Select all products
@@ -564,25 +431,19 @@
     function updateCard(card, product) {
       const cardNum = card.dataset.card;
       const content = card.querySelector('.content');
+      const header = card.querySelector('.header');
       
       cardData[cardNum].product = product;
+      
+      // Update header with product name or default
+      header.textContent = product || `PRODUCT ${cardNum}`;
+      
       content.innerHTML = '';
       
       if (!product) return;
       
       // Get pricing for this product
-      const pricing = pricingRanges[product] || { min: 5, max: 50, default: 10 };
-      const verticalCount = cardData[cardNum].verticals.length;
-      let min = pricing.min;
-      let max = pricing.max;
-      let defaultPrice = pricing.default;
-      
-      // Add $2 per vertical (except Standalone)
-      if (product !== 'CNN Standalone Vertical' && verticalCount > 0) {
-        min += verticalCount * 2;
-        max += verticalCount * 2;
-        defaultPrice += verticalCount * 2;
-      }
+      const pricing = getPricingRangeForProduct(product, cardData[cardNum].verticals.length);
       
       if (product === 'CNN Standalone Vertical') {
         content.innerHTML = `
@@ -643,19 +504,18 @@
           <button onclick="setPricing('${cardNum}', 'both', this)">Both</button>
         </div>
         <div class="discount-section"></div>
-        <input type="range" min="${min}" max="${max}" value="${defaultPrice}" class="price-slider" oninput="updatePrice('${cardNum}', this.value)">
+        <input type="range" min="${pricing.min}" max="${pricing.max}" value="${pricing.default}" class="price-slider" oninput="updatePrice('${cardNum}', this.value)">
         <div class="price-labels">
-          <span>$${min.toFixed(2)}/mo</span>
-          <span>$${max.toFixed(2)}/mo</span>
+          <span>$${pricing.min.toFixed(2)}/mo</span>
+          <span>$${pricing.max.toFixed(2)}/mo</span>
         </div>
         <div class="pricing-display">
-          <div><strong>Monthly:</strong> $${defaultPrice.toFixed(2)}</div>
-          <div style="color: #666;">Inferred Annual: $${(defaultPrice * 12).toFixed(2)}</div>
+          <div><strong>Monthly:</strong> $${pricing.default.toFixed(2)}</div>
+          <div style="color: #666;">Inferred Annual: $${(pricing.default * 12).toFixed(2)}</div>
         </div>
       `;
       
-      cardData[cardNum].monthlyRate = defaultPrice;
-      checkProductsConfigured();
+      cardData[cardNum].monthlyRate = pricing.default;
     }
 
     function addFeatures(cardNum, type) {
@@ -748,7 +608,28 @@
         
         // Update pricing if verticals changed
         if (type === 'vertical') {
-          updateVerticalPricing(cardNum);
+          const card = document.querySelector(`[data-card="${cardNum}"]`);
+          const product = cardData[cardNum].product;
+          const pricing = getPricingRangeForProduct(product, cardData[cardNum].verticals.length);
+          
+          const slider = card.querySelector('.price-slider');
+          const priceLabels = card.querySelector('.price-labels');
+          
+          if (slider && priceLabels) {
+            slider.min = pricing.min;
+            slider.max = pricing.max;
+            if (cardData[cardNum].monthlyRate < pricing.min || cardData[cardNum].monthlyRate > pricing.max) {
+              slider.value = pricing.default;
+              cardData[cardNum].monthlyRate = pricing.default;
+            }
+            
+            priceLabels.innerHTML = `
+              <span>$${pricing.min.toFixed(2)}/mo</span>
+              <span>$${pricing.max.toFixed(2)}/mo</span>
+            `;
+            
+            updatePriceDisplay(cardNum);
+          }
         }
       }
       
@@ -768,7 +649,28 @@
         updateFeatureDisplay(cardNum, type);
         
         if (type === 'vertical') {
-          updateVerticalPricing(cardNum);
+          const card = document.querySelector(`[data-card="${cardNum}"]`);
+          const product = cardData[cardNum].product;
+          const pricing = getPricingRangeForProduct(product, cardData[cardNum].verticals.length);
+          
+          const slider = card.querySelector('.price-slider');
+          const priceLabels = card.querySelector('.price-labels');
+          
+          if (slider && priceLabels) {
+            slider.min = pricing.min;
+            slider.max = pricing.max;
+            if (cardData[cardNum].monthlyRate < pricing.min || cardData[cardNum].monthlyRate > pricing.max) {
+              slider.value = pricing.default;
+              cardData[cardNum].monthlyRate = pricing.default;
+            }
+            
+            priceLabels.innerHTML = `
+              <span>$${pricing.min.toFixed(2)}/mo</span>
+              <span>$${pricing.max.toFixed(2)}/mo</span>
+            `;
+            
+            updatePriceDisplay(cardNum);
+          }
         }
       }
     }
@@ -792,40 +694,6 @@
       ).join('');
       
       count.textContent = selected.length;
-    }
-
-    function updateVerticalPricing(cardNum) {
-      const card = document.querySelector(`[data-card="${cardNum}"]`);
-      const product = cardData[cardNum].product;
-      
-      if (!card || !product || product === 'CNN Standalone Vertical') return;
-      
-      const slider = card.querySelector('.price-slider');
-      const priceLabels = card.querySelector('.price-labels');
-      
-      if (!slider || !priceLabels) return;
-      
-      const pricing = pricingRanges[product];
-      const verticalCount = cardData[cardNum].verticals.length;
-      
-      const min = pricing.min + (verticalCount * 2);
-      const max = pricing.max + (verticalCount * 2);
-      const defaultPrice = pricing.default + (verticalCount * 2);
-      
-      slider.min = min;
-      slider.max = max;
-      
-      if (cardData[cardNum].monthlyRate < min || cardData[cardNum].monthlyRate > max) {
-        slider.value = defaultPrice;
-        cardData[cardNum].monthlyRate = defaultPrice;
-      }
-      
-      priceLabels.innerHTML = `
-        <span>$${min.toFixed(2)}/mo</span>
-        <span>$${max.toFixed(2)}/mo</span>
-      `;
-      
-      updatePriceDisplay(cardNum);
     }
 
     function setPricing(cardNum, type, btn) {
@@ -919,12 +787,6 @@
       }
     }
 
-    // Check if any products are configured and show/hide report button
-    function checkProductsConfigured() {
-      const hasProducts = Array.from(activeProducts).some(num => cardData[num].product);
-      document.getElementById('runReportBtn').style.display = hasProducts ? 'inline-block' : 'none';
-    }
-
     // Show report configuration modal
     function showReportModal() {
       document.getElementById('reportModal').style.display = 'flex';
@@ -935,19 +797,52 @@
       document.getElementById('reportModal').style.display = 'none';
     }
 
+    // Set report type
+    function setReportType() {
+      showReportModal();
+    }
+
     // Generate the report
     function generateReport() {
       const reportType = document.querySelector('input[name="reportType"]:checked').value;
       const outputType = document.querySelector('input[name="outputType"]:checked').value;
       
+      // Store the selections
+      currentReportType = reportType;
+      currentOutputType = outputType;
+      
+      // Update the display
+      const display = document.getElementById('reportTypeDisplay');
+      const reportTypeText = reportType === 'tiered' ? 'Tiered Bundles' : 'Independent Products';
+      const outputTypeText = outputType === 'percentage' ? 'Take Rates (%)' : 
+                           outputType === 'population' ? 'Population Counts (#)' : 'Revenue ($)';
+      
+      display.innerHTML = `<strong>Report Type:</strong> ${reportTypeText} | <strong>Output:</strong> ${outputTypeText}`;
+      display.style.display = 'block';
+      
       // Close modal
       closeReportModal();
+    }
+
+    // Run simulation with current report settings
+    function runSimulation() {
+      if (!currentReportType || !currentOutputType) {
+        alert('Please set report type first by clicking "Set Report Type"');
+        return;
+      }
+      
+      // Check if any products are configured
+      const hasProducts = Array.from(activeProducts).some(num => cardData[num].product);
+      if (!hasProducts) {
+        alert('Please configure at least one product before running simulation');
+        return;
+      }
       
       // Generate report data
-      const reportData = calculateReportData(reportType, outputType);
+      const reportData = calculateReportData(currentReportType, currentOutputType);
       
       // Display report
-      displayReport(reportData, reportType, outputType);
+      displayReport(reportData, currentReportType, currentOutputType);
       
       // Show report container
       document.getElementById('reportContainer').style.display = 'block';
@@ -1135,5 +1030,190 @@
       URL.revokeObjectURL(url);
     }
   </script>
+</head>
+<body>
+  <div class="main-header">
+    <h1 class="welcome-title">Welcome to the CNN News Subscription Simulator</h1>
+    <p class="welcome-subtitle">Configure up to 8 subscription products and run detailed market simulations</p>
+    
+    <div class="header-buttons">
+      <button class="header-button set-report-button" onclick="setReportType()">
+        <span style="margin-right: 5px;">📊</span> Set Report Type
+      </button>
+      <button class="header-button run-simulation-button" onclick="runSimulation()">
+        <span style="margin-right: 5px;">▶️</span> Run Simulation
+      </button>
+    </div>
+    
+    <div class="report-type-display" id="reportTypeDisplay"></div>
+  </div>
+
+  <div class="modal-overlay" id="featureModal">
+    <div class="modal">
+      <h3 id="modalTitle">Select Feature</h3>
+      <div class="modal-options" id="modalOptions"></div>
+      <div class="modal-buttons">
+        <button class="modal-add" onclick="addSelectedFeatures()">Add Selected</button>
+        <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="report-modal" id="reportModal">
+    <div class="report-modal-content">
+      <h2>Configure Report</h2>
+      
+      <div class="report-option">
+        <label>Report Type:</label>
+        <div>
+          <label><input type="radio" name="reportType" value="tiered" checked> Products Included as Part of Tiered Bundles</label>
+          <label><input type="radio" name="reportType" value="independent"> Each Product as Independent Product</label>
+        </div>
+      </div>
+      
+      <div class="report-option">
+        <label>Select Output:</label>
+        <div>
+          <label><input type="radio" name="outputType" value="percentage" checked> Take Rates (%)</label>
+          <label><input type="radio" name="outputType" value="population"> Population Counts (#)</label>
+          <label><input type="radio" name="outputType" value="revenue"> Revenue ($)</label>
+        </div>
+      </div>
+      
+      <div class="report-buttons">
+        <button class="generate-report" onclick="generateReport()">Set Report Type</button>
+        <button class="cancel-report" onclick="closeReportModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="controls-section">
+    <h2>Select Products to Include in Simulation</h2>
+    <button class="clear-button" onclick="clearAllSelections()">
+      <span style="margin-right: 5px;">🗑️</span> Clear All Selections
+    </button>
+    <div class="product-toggles" id="productToggles">
+      <button class="toggle-btn active" onclick="toggleProduct(1)">Product 1</button>
+      <button class="toggle-btn active" onclick="toggleProduct(2)">Product 2</button>
+      <button class="toggle-btn active" onclick="toggleProduct(3)">Product 3</button>
+      <button class="toggle-btn active" onclick="toggleProduct(4)">Product 4</button>
+      <button class="toggle-btn" onclick="toggleProduct(5)">Product 5</button>
+      <button class="toggle-btn" onclick="toggleProduct(6)">Product 6</button>
+      <button class="toggle-btn" onclick="toggleProduct(7)">Product 7</button>
+      <button class="toggle-btn" onclick="toggleProduct(8)">Product 8</button>
+    </div>
+    <div class="select-controls">
+      <button onclick="selectAllProducts()">Select All</button>
+      <button onclick="deselectAllProducts()">Deselect All</button>
+      <button onclick="selectProducts([1,2,3,4])">Select 1-4</button>
+      <button onclick="selectProducts([5,6,7,8])">Select 5-8</button>
+    </div>
+  </div>
+  
+  <div class="card-container">
+    <div class="card active" data-card="1">
+      <div class="header">PRODUCT 1</div>
+      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
+        <option value="">Select Base Product</option>
+        <option value="CNN Reader">CNN Reader</option>
+        <option value="CNN Streaming">CNN Streaming</option>
+        <option value="CNN All-Access">CNN All-Access</option>
+        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
+      </select>
+      <div class="content"></div>
+    </div>
+    
+    <div class="card active" data-card="2">
+      <div class="header">PRODUCT 2</div>
+      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
+        <option value="">Select Base Product</option>
+        <option value="CNN Reader">CNN Reader</option>
+        <option value="CNN Streaming">CNN Streaming</option>
+        <option value="CNN All-Access">CNN All-Access</option>
+        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
+      </select>
+      <div class="content"></div>
+    </div>
+    
+    <div class="card active" data-card="3">
+      <div class="header">PRODUCT 3</div>
+      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
+        <option value="">Select Base Product</option>
+        <option value="CNN Reader">CNN Reader</option>
+        <option value="CNN Streaming">CNN Streaming</option>
+        <option value="CNN All-Access">CNN All-Access</option>
+        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
+      </select>
+      <div class="content"></div>
+    </div>
+    
+    <div class="card active" data-card="4">
+      <div class="header">PRODUCT 4</div>
+      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
+        <option value="">Select Base Product</option>
+        <option value="CNN Reader">CNN Reader</option>
+        <option value="CNN Streaming">CNN Streaming</option>
+        <option value="CNN All-Access">CNN All-Access</option>
+        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
+      </select>
+      <div class="content"></div>
+    </div>
+    
+    <div class="card inactive" data-card="5">
+      <div class="header">PRODUCT 5</div>
+      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
+        <option value="">Select Base Product</option>
+        <option value="CNN Reader">CNN Reader</option>
+        <option value="CNN Streaming">CNN Streaming</option>
+        <option value="CNN All-Access">CNN All-Access</option>
+        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
+      </select>
+      <div class="content"></div>
+    </div>
+    
+    <div class="card inactive" data-card="6">
+      <div class="header">PRODUCT 6</div>
+      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
+        <option value="">Select Base Product</option>
+        <option value="CNN Reader">CNN Reader</option>
+        <option value="CNN Streaming">CNN Streaming</option>
+        <option value="CNN All-Access">CNN All-Access</option>
+        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
+      </select>
+      <div class="content"></div>
+    </div>
+    
+    <div class="card inactive" data-card="7">
+      <div class="header">PRODUCT 7</div>
+      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
+        <option value="">Select Base Product</option>
+        <option value="CNN Reader">CNN Reader</option>
+        <option value="CNN Streaming">CNN Streaming</option>
+        <option value="CNN All-Access">CNN All-Access</option>
+        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
+      </select>
+      <div class="content"></div>
+    </div>
+    
+    <div class="card inactive" data-card="8">
+      <div class="header">PRODUCT 8</div>
+      <select class="product-select" onchange="updateCard(this.parentElement, this.value)">
+        <option value="">Select Base Product</option>
+        <option value="CNN Reader">CNN Reader</option>
+        <option value="CNN Streaming">CNN Streaming</option>
+        <option value="CNN All-Access">CNN All-Access</option>
+        <option value="CNN Standalone Vertical">CNN Standalone Vertical</option>
+      </select>
+      <div class="content"></div>
+    </div>
+  </div>
+
+  <div class="report-container" id="reportContainer">
+    <div class="report-header">
+      <h2 id="reportTitle">Simulation Report</h2>
+      <button class="download-btn" onclick="downloadReport()">Download CSV</button>
+    </div>
+    <div id="reportContent"></div>
+  </div>
 </body>
 </html>
